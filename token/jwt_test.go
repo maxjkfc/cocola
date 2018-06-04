@@ -100,3 +100,34 @@ func Test_ParseJWTWithMap(t *testing.T) {
 		t.Logf("Test_ParseJWTWithMap Sussess: %v", r2)
 	}
 }
+
+func Benchmark_CreateJWTWithClaims(b *testing.B) {
+	j := New()
+	for i := 0; i < b.N; i++ {
+		t1 = j.Create(u1).Get()
+	}
+}
+
+func Benchmark_CreateJWTWithMap(b *testing.B) {
+	j := New()
+	u2["ist"] = time.Now().Unix()
+	for i := 0; i < b.N; i++ {
+		t2 = j.Create(u2).Get()
+	}
+}
+
+func Benchmark_ParseJWTWithClaims(b *testing.B) {
+	j := New()
+	r := &User{}
+	for i := 0; i < b.N; i++ {
+		j.Parse(t1, r)
+	}
+}
+
+func Benchmark_ParseJWTWithMap(b *testing.B) {
+	j := New()
+	r := make(UserMap)
+	for i := 0; i < b.N; i++ {
+		j.Parse(t2, r)
+	}
+}
