@@ -1,5 +1,21 @@
 # cocola
 
+
+## Error
+
+### Useage:
+```golang
+    import "github.com/maxjkfc/cocola/errors"
+
+
+    func main()  {
+        err  := errors.New(1 , "Error: Not Find it")
+        fmt.Println(err.Error())
+
+
+    }
+```
+
 ## Log
 > Use the  go.uber.org/zap package 
 

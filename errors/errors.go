@@ -36,7 +36,7 @@ func init() {
 	}
 }
 
-func New(code int, msg string) {
+func New(code int, msg string) Error {
 
 	if _, ok := errlist.errs[code]; ok {
 		panic(ErrorExist.Error())
@@ -47,6 +47,8 @@ func New(code int, msg string) {
 		msg:  msg,
 	}
 	errlist.list = append(errlist.list, code)
+
+	return errlist.errs[code]
 }
 
 func Err(code int) Error {
