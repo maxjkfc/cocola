@@ -1,6 +1,7 @@
 package errors
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"sort"
@@ -18,13 +19,13 @@ type errorList struct {
 }
 
 type err struct {
-	msg  string
-	code int
+	Msg  string `json:"msg"`
+	Code int    `json:"code"`
 }
 
 type Error interface {
 	Error() string
-	Code() int
+	Json() string
 }
 
 func init() {
@@ -43,8 +44,8 @@ func New(code int, msg string) Error {
 	}
 
 	errlist.errs[code] = &err{
-		code: code,
-		msg:  msg,
+		Code: code,
+		Msg:  msg,
 	}
 	errlist.list = append(errlist.list, code)
 
@@ -74,9 +75,13 @@ func Keys() []int {
 }
 
 func (e *err) Error() string {
-	return e.msg
+	return e.Msg
 }
 
-func (e *err) Code() int {
-	return e.code
+func (e *err) Json() string {
+	x, err := json.Marshal(e)
+	if err != nil {
+		panic(err)
+	}
+	return string(x)
 }

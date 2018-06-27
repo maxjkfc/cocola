@@ -5,4 +5,6 @@ const (
 	Mariadb = "mariadb"
 	Mysql   = "mysql"
 	Redis   = "redis"
+
+	Mongo_Protocol = "mongodb"
 )
