@@ -3,7 +3,7 @@ package db
 import (
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
+	"github.com/globalsign/mgo/bson"
 )
 
 var (
@@ -12,6 +12,7 @@ var (
 )
 
 type user struct {
+	Id   bson.ObjectId `bson:"_id,omitempty"`
 	Name string
 	Age  int
 }
@@ -27,7 +28,6 @@ func Test_MgoDial(t *testing.T) {
 
 	m, err = mongoDial(c)
 	if err != nil {
-		spew.Dump(err)
 		t.Error(err)
 	} else {
 		t.Log("Connect Sussess")
@@ -35,6 +35,7 @@ func Test_MgoDial(t *testing.T) {
 }
 func Test_GetMgo(t *testing.T) {
 	x := user{
+		Id:   bson.NewObjectId(),
 		Name: "Admin",
 		Age:  13,
 	}
@@ -48,5 +49,18 @@ func Test_GetMgo(t *testing.T) {
 }
 
 func Test_FindMgo(t *testing.T) {
+	c := m.New().DB("test").C("user")
+	u := new(user)
+	q := c.Find(bson.M{"name": "Admin"})
+	if err := q.One(u); err != nil {
+		t.Error(err)
+	} else {
+		t.Log("Success")
+	}
+
+}
+
+func Test_Status(t *testing.T) {
+	t.Log(m.Status())
 
 }

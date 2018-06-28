@@ -12,7 +12,6 @@ type Pool interface {
 }
 
 type pool struct {
-	num     int
 	mgo     map[string]Mgo
 	mariadb map[string]interface{}
 	redis   map[string]interface{}
@@ -45,4 +44,11 @@ func (p *pool) Mgo(name string) (Mgo, errors.Error) {
 	} else {
 		return x, nil
 	}
+}
+
+func (p *pool) Status() {
+	for _, v := range p.mgo {
+		v.Status()
+	}
+
 }
