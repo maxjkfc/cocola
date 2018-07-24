@@ -1,9 +1,10 @@
-package db
+package mongo
 
 import (
 	"testing"
 
 	"github.com/globalsign/mgo/bson"
+	"github.com/maxjkfc/cocola/db/config"
 )
 
 var (
@@ -19,14 +20,14 @@ type user struct {
 
 func Test_MgoDial(t *testing.T) {
 
-	c := Config{
-		DBtype: Mongo,
+	c := config.Config{
+		DBtype: "Mongo",
 		Host:   "localhost:27017",
 		//Account: "admin",
 		Tag: "Mongo",
 	}
 
-	m, err = mongoDial(c)
+	m, err = Dial(c)
 	if err != nil {
 		t.Error(err)
 	} else {

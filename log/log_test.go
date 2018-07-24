@@ -17,6 +17,13 @@ func Test_NewZapConfig(t *testing.T) {
 	}
 	t.Log("Success")
 }
+func Test_Zlog_Output(t *testing.T) {
+	Zlog().Info("Bug", zap.Any("context", output{
+		Code: "1",
+		Msg:  "kkuu",
+	}))
+
+}
 
 func Test_Zlog(t *testing.T) {
 	Zlog().Info("Test", zap.Any("context", 123))

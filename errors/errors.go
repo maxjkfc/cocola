@@ -9,8 +9,8 @@ import (
 
 var (
 	errlist       *errorList
-	ErrorNotExist = errors.New("Error Code Not Exist")
-	ErrorExist    = errors.New("Error Code have Exist")
+	errorNotExist = errors.New("Error Code Not Exist")
+	errorExist    = errors.New("Error Code have Exist")
 )
 
 type errorList struct {
@@ -28,19 +28,20 @@ type Error interface {
 	Json() string
 }
 
-func init() {
+func new() {
+
 	if errlist == nil {
 		errlist = &errorList{
 			errs: make(map[int]Error),
 			list: make([]int, 0),
 		}
 	}
+
 }
-
 func New(code int, msg string) Error {
-
+	new()
 	if _, ok := errlist.errs[code]; ok {
-		panic(ErrorExist.Error())
+		panic(errorExist.Error())
 	}
 
 	errlist.errs[code] = &err{
@@ -56,7 +57,7 @@ func Err(code int) Error {
 	if x, ok := errlist.errs[code]; ok {
 		return x
 	} else {
-		panic(ErrorNotExist.Error())
+		panic(errorNotExist.Error())
 	}
 
 }

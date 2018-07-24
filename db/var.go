@@ -1,10 +1,9 @@
 package db
 
 const (
-	Mongo   = "mongo"
-	Mariadb = "mariadb"
-	Mysql   = "mysql"
-	Redis   = "redis"
-
+	Mongo_Driver   = "mongo"
+	Mariadb_Driver = "mariadb"
+	Mysql_Driver   = "mysql"
+	Redis_Driver   = "redis"
 	Mongo_Protocol = "mongodb"
 )
