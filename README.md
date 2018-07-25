@@ -11,8 +11,6 @@
     func main()  {
         err  := errors.New(1 , "Error: Not Find it")
         fmt.Println(err.Error())
-
-
     }
 ```
 
@@ -25,7 +23,7 @@
 
     func main(){
         log.NewZapConfig().Env(log.DEV).Level(log.DEBUG).Build()
-        log.Zlogs().Info("This is the zap log pkg")
+        log.Log().Info("This is the zap log pkg" , nil)
     }
 ```
 

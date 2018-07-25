@@ -12,7 +12,7 @@ It's a log module base on zap log, easy for use and config it
         // Env - set the environment for log
         // Level - set the log Level
         // Build - build the log instrace
-	    if err := NewZapConfig().Env(DEV).Level(DEBUG).Build(); err != nil {
+	    if _ , err := NewZapConfig().Env(DEV).Level(DEBUG).Build(); err != nil {
 	    	log.Error(err)
 	    }
         log.Zlog().Info("This is a log")
