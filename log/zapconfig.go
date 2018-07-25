@@ -14,7 +14,6 @@ type zapconfiger struct {
 	encoding string
 	c        zap.Config
 	ec       zapcore.EncoderConfig
-	err      error
 }
 
 func newZapConfig() Configer {
@@ -26,28 +25,32 @@ func newZapConfig() Configer {
 func (zc *zapconfiger) Level(level string) Configer {
 	if level == "" {
 		zc.level = DEBUG
+	} else {
+		zc.level = level
 	}
-	zc.level = level
 	return zc
 }
 
 func (zc *zapconfiger) Name(name string) Configer {
 	if name == "" {
 		zc.name = "zaplog"
+	} else {
+		zc.name = name
 	}
-	zc.name = name
 	return zc
 }
 
 func (zc *zapconfiger) Env(env string) Configer {
 	if env == "" {
 		zc.env = DEV
+	} else {
+		zc.env = env
 	}
-	zc.env = env
 	return zc
 }
 
-func (zc *zapconfiger) Build() error {
+func (zc *zapconfiger) Build() (Logger, error) {
+
 	switch zc.env {
 	case PRD:
 		zc.c = productConfig()
@@ -68,8 +71,16 @@ func (zc *zapconfiger) Build() error {
 		}
 	}
 
-	zlog, zc.err = zc.c.Build()
-	return zc.err
+	return zc.build()
+}
+
+func (zc *zapconfiger) build() (Logger, error) {
+
+	x := new(zlog)
+	x.zl, x.err = zc.c.Build()
+	log = x
+	return x, x.err
+
 }
 
 func defaultEncoderConfig() zapcore.EncoderConfig {

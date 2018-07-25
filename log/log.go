@@ -1,7 +1,5 @@
 package log
 
-import "go.uber.org/zap"
-
 /*
 1. chosen log type
 2. set log config
@@ -17,36 +15,27 @@ const (
 	FATAL = "fatal"
 	DEV   = "dev"
 	PRD   = "prd"
-	ZAP   = "zap"
 )
 
-var zlog *zap.Logger
-
-type Configer interface {
-	Level(string) Configer
-	Name(string) Configer
-	Env(string) Configer
-	Build() error
-}
+var log Logger
 
 type Logger interface {
-	Info(title string, msg interface{})
+	Debug(msg string, output interface{})
+	Info(msg string, output interface{})
+	Warn(msg string, output interface{})
+	Error(msg string, output interface{})
+	Panic(msg string, output interface{})
+	Fatal(msg string, output interface{})
 }
 
-// NewZapConfig - Set the New  Zap Log
-func NewZapConfig() Configer {
-	return newZapConfig()
+func init() {
+	defaultLog()
 }
 
-func Zlog() *zap.Logger {
-	if zlog == nil {
-		newZapConfig().Env(DEV).Build()
-	}
-	return zlog
+func Log() Logger {
+	return log
 }
-func Zlogs() *zap.SugaredLogger {
-	if zlog == nil {
-		newZapConfig().Env(DEV).Build()
-	}
-	return zlog.Sugar()
+
+func defaultLog() {
+	newZapConfig().Build()
 }
