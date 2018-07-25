@@ -29,6 +29,10 @@ type Configer interface {
 	Build() error
 }
 
+type Logger interface {
+	Info(title string, msg interface{})
+}
+
 // NewZapConfig - Set the New  Zap Log
 func NewZapConfig() Configer {
 	return newZapConfig()

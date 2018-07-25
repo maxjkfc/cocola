@@ -12,8 +12,8 @@ func Test_ErrorNew(t *testing.T) {
 
 	err := Err(1)
 	fmt.Printf("Type: %T\n", err)
-	fmt.Println("Error Code:", err.Code())
 	fmt.Println("Error Msg:", err.Error())
+	fmt.Println(err.Json())
 }
 
 func Test_ErrorList(t *testing.T) {
