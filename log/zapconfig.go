@@ -12,13 +12,17 @@ type zapconfiger struct {
 	name     string
 	level    string
 	encoding string
+	skip     int
 	c        zap.Config
 	ec       zapcore.EncoderConfig
+	opts     []zap.Option
 }
 
 func newZapConfig() Configer {
 	return &zapconfiger{
-		c: zap.Config{},
+		skip: 1,
+		c:    zap.Config{},
+		opts: make([]zap.Option, 0, 0),
 	}
 }
 
@@ -49,6 +53,11 @@ func (zc *zapconfiger) Env(env string) Configer {
 	return zc
 }
 
+func (zc *zapconfiger) AddCallerSkip(skip int) Configer {
+	zc.skip = skip
+	return zc
+}
+
 func (zc *zapconfiger) Build() (Logger, error) {
 
 	switch zc.env {
@@ -71,13 +80,14 @@ func (zc *zapconfiger) Build() (Logger, error) {
 		}
 	}
 
+	zc.opts = append(zc.opts, zap.AddCallerSkip(zc.skip))
 	return zc.build()
 }
 
 func (zc *zapconfiger) build() (Logger, error) {
 
 	x := new(zlog)
-	x.zl, x.err = zc.c.Build()
+	x.zl, x.err = zc.c.Build(zc.opts...)
 	log = x
 	return x, x.err
 
