@@ -26,20 +26,22 @@ type err struct {
 type Error interface {
 	Error() string
 	Json() string
+	GetC() int
 }
 
 func new() {
-
 	if errlist == nil {
 		errlist = &errorList{
 			errs: make(map[int]Error),
-			list: make([]int, 0),
+			list: make([]int, 255, 255),
 		}
 	}
 
 }
+
 func New(code int, msg string) Error {
 	new()
+
 	if _, ok := errlist.errs[code]; ok {
 		panic(errorExist.Error())
 	}
@@ -48,6 +50,7 @@ func New(code int, msg string) Error {
 		Code: code,
 		Msg:  msg,
 	}
+
 	errlist.list = append(errlist.list, code)
 
 	return errlist.errs[code]
@@ -85,4 +88,8 @@ func (e *err) Json() string {
 		panic(err)
 	}
 	return string(x)
+}
+
+func (e *err) GetC() int {
+	return e.Code
 }
