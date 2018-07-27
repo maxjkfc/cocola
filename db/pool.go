@@ -13,7 +13,7 @@ type Pool interface {
 	NewConnect(config.Config) errors.Error
 	Mgo(string) (mongo.Mgo, errors.Error)
 	Redis(string) (redis.Redis, errors.Error)
-	Status
+	Status()
 }
 
 type pool struct {
