@@ -11,14 +11,14 @@ var Pools Pool
 
 type Pool interface {
 	NewConnect(config.Config) errors.Error
-	Mgo(string) (mongo.Mgo, errors.Error)
+	Mgo(string) (mongo.MongoSession, errors.Error)
 	Redis(string) (redis.Redis, errors.Error)
 	List() []Mod
 	Status()
 }
 
 type pool struct {
-	mgo     map[string]mongo.Mgo
+	mgo     map[string]mongo.MongoSession
 	mariadb map[string]interface{}
 	redis   map[string]redis.Redis
 	list    []Mod

@@ -10,12 +10,21 @@ import (
 var (
 	m   Mgo
 	err error
+	u   *user
 )
 
 type user struct {
 	Id   bson.ObjectId `bson:"_id,omitempty"`
 	Name string
 	Age  int
+}
+
+func init() {
+	u = &user{
+		Name: "kk",
+		Age:  10,
+	}
+
 }
 
 func Test_MgoDial(t *testing.T) {
@@ -63,5 +72,13 @@ func Test_FindMgo(t *testing.T) {
 
 func Test_Status(t *testing.T) {
 	t.Log(m.Status())
+}
 
+func Benchmark_NewSession(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		x := m.New()
+		x.DB("test").C("info").Insert(u)
+		defer x.Close()
+	}
 }

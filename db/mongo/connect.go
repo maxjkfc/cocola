@@ -9,7 +9,7 @@ import (
 	"github.com/maxjkfc/cocola/errors"
 )
 
-type MongoSession interface {
+type Mgo interface {
 	New() *mgo.Session
 	Status() string
 	Close()
