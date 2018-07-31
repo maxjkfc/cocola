@@ -7,7 +7,7 @@ import (
 	"github.com/maxjkfc/cocola/errors"
 )
 
-var p *tpool
+var p *pool
 
 type pool struct {
 	mgosession mongo.MgoSession
