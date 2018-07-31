@@ -14,16 +14,16 @@ func Test_MgoConnect(t *testing.T) {
 		Tag: "m",
 	}
 
-	if err := Pools.NewConnect(c); err != nil {
+	if err := NewConnect(c); err != nil {
 		t.Error(err)
 	}
 
-	if Pools.Mgo() == nil {
+	if Mgo() == nil {
 
 		t.Error("Not Find the Database")
 	} else {
 
-		t.Log("Status:", Pools.Mgo().Status())
+		t.Log("Status:", Mgo().Status())
 	}
 
 }
@@ -34,15 +34,12 @@ func Test_RedisConnect(t *testing.T) {
 		Host:   "localhost:6379",
 		Tag:    "r",
 	}
-	if err := Pools.NewConnect(c); err != nil {
+	if err := NewConnect(c); err != nil {
 		t.Error(err)
 	}
-	if r, err := Pools.Redis(c.Tag); err != nil {
+	if r, err := Redis(c.Tag); err != nil {
 		t.Error("Not Find the Database")
 	} else {
 		t.Log("Status:", r.Status())
 	}
-}
-
-func Test_Statux(t *testing.T) {
 }

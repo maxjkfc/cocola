@@ -44,21 +44,18 @@ func (m *mgodb) Insert(args interface{}) error {
 func (m *mgodb) Update(selector interface{}, args interface{}) error {
 	defer m.close()
 	return m.c.Update(selector, args)
-
 }
 
 // UpdateByID - 更新資料
 func (m *mgodb) UpdateByID(id string, args interface{}) error {
 	defer m.close()
 	return m.c.UpdateId(bson.ObjectIdHex(id), args)
-
 }
 
 // UpdateByID - 更新資料
 func (m *mgodb) UpdateAll(selector interface{}, args interface{}) (*mgo.ChangeInfo, error) {
 	defer m.close()
 	return m.c.UpdateAll(selector, args)
-
 }
 
 // FindByID - 查詢資料

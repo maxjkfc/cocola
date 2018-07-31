@@ -7,15 +7,7 @@ import (
 	"github.com/maxjkfc/cocola/errors"
 )
 
-var Pools Pool
-
-type Pool interface {
-	NewConnect(config.Config) errors.Error
-	Mgo() mongo.MgoSession
-	Redis(string) (redis.Redis, errors.Error)
-	List() []Mod
-	Status()
-}
+var p *tpool
 
 type pool struct {
 	mgosession mongo.MgoSession
@@ -30,13 +22,13 @@ type Mod struct {
 }
 
 func init() {
-	Pools = &pool{
+	p = &pool{
 		redis: make(map[string]redis.Redis, 0),
 		list:  make([]Mod, 0),
 	}
 }
 
-func (p *pool) NewConnect(c config.Config) errors.Error {
+func NewConnect(c config.Config) errors.Error {
 
 	switch c.DBtype {
 
@@ -68,11 +60,11 @@ func (p *pool) NewConnect(c config.Config) errors.Error {
 	return nil
 }
 
-func (p *pool) Mgo() mongo.MgoSession {
+func Mgo() mongo.MgoSession {
 	return p.mgosession
 }
 
-func (p *pool) Redis(name string) (redis.Redis, errors.Error) {
+func Redis(name string) (redis.Redis, errors.Error) {
 	if x, ok := p.redis[name]; !ok {
 		return nil, errors.ErrorPoolNotFound
 	} else {
@@ -80,10 +72,10 @@ func (p *pool) Redis(name string) (redis.Redis, errors.Error) {
 	}
 }
 
-func (p *pool) List() []Mod {
+func List() []Mod {
 	return p.list
 }
 
-func (p *pool) Status() {
+func Status() {
 	p.mgosession.Status()
 }
