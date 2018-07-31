@@ -9,8 +9,9 @@ import (
 	"github.com/maxjkfc/cocola/errors"
 )
 
-type Mgo interface {
+type MgoSession interface {
 	New() *mgo.Session
+	DB(dbname, collection string) MgoCmd
 	Status() string
 	Close()
 }
@@ -28,8 +29,12 @@ func init() {
 }
 
 // mongoDial - Mongo Driver Connect
-func Dial(c config.Config) (Mgo, errors.Error) {
+func Dial(c config.Config) (MgoSession, errors.Error) {
 	return new(mgodriver).dial(c)
+}
+
+func Debug(debug bool) {
+	mgo.SetDebug(debug)
 }
 
 // New - new the mongo client instance
@@ -37,8 +42,13 @@ func (m *mgodriver) New() *mgo.Session {
 	return m.session.Copy()
 }
 
+// DB - create the mgo collection
+func (m *mgodriver) DB(dbname, collection string) MgoCmd {
+	return newMgo(m.session.Copy(), dbname, collection)
+}
+
 // dial - connect the mongo server
-func (m *mgodriver) dial(c config.Config) (Mgo, errors.Error) {
+func (m *mgodriver) dial(c config.Config) (MgoSession, errors.Error) {
 	dconfig, err := m.setConfig(c)
 	if err != nil {
 		return nil, err
@@ -68,7 +78,6 @@ func (m *mgodriver) setConfig(c config.Config) (interface{}, errors.Error) {
 	if m.c.ConnectTimeOut <= 0 {
 		m.c.ConnectTimeOut = ConnectTimeOut
 	}
-
 	mconfig.Timeout = (time.Duration(m.c.ConnectTimeOut) * time.Second)
 
 	return mconfig, nil

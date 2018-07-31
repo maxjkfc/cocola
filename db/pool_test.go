@@ -17,10 +17,13 @@ func Test_MgoConnect(t *testing.T) {
 	if err := Pools.NewConnect(c); err != nil {
 		t.Error(err)
 	}
-	if m, err := Pools.Mgo(c.Tag); err != nil {
+
+	if Pools.Mgo() == nil {
+
 		t.Error("Not Find the Database")
 	} else {
-		t.Log("Database Name:", m.New().DB("test").Name)
+
+		t.Log("Status:", Pools.Mgo().Status())
 	}
 
 }
@@ -37,7 +40,7 @@ func Test_RedisConnect(t *testing.T) {
 	if r, err := Pools.Redis(c.Tag); err != nil {
 		t.Error("Not Find the Database")
 	} else {
-		t.Log("Database Name:", r.New().Do("PING"))
+		t.Log("Status:", r.Status())
 	}
 }
 

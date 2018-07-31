@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	m   Mgo
+	m   MgoSession
 	err error
 	u   *user
 )
@@ -50,8 +50,7 @@ func Test_GetMgo(t *testing.T) {
 		Age:  13,
 	}
 
-	c := m.New().DB("test").C("user")
-	err := c.Insert(x)
+	err := m.DB("test", "user").Insert(x)
 	if err != nil {
 		panic(err)
 	}
@@ -75,10 +74,19 @@ func Test_Status(t *testing.T) {
 }
 
 func Benchmark_NewSession(b *testing.B) {
+	u.Name = "NewSession"
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		x := m.New()
 		x.DB("test").C("info").Insert(u)
 		defer x.Close()
+	}
+}
+
+func Benchmark_NewDB(b *testing.B) {
+	u.Name = "NewDB"
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m.DB("test", "info").Insert(u)
 	}
 }

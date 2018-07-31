@@ -11,17 +11,17 @@ var Pools Pool
 
 type Pool interface {
 	NewConnect(config.Config) errors.Error
-	Mgo(string) (mongo.MongoSession, errors.Error)
+	Mgo() mongo.MgoSession
 	Redis(string) (redis.Redis, errors.Error)
 	List() []Mod
 	Status()
 }
 
 type pool struct {
-	mgo     map[string]mongo.MongoSession
-	mariadb map[string]interface{}
-	redis   map[string]redis.Redis
-	list    []Mod
+	mgosession mongo.MgoSession
+	mariadb    map[string]interface{}
+	redis      map[string]redis.Redis
+	list       []Mod
 }
 
 type Mod struct {
@@ -31,8 +31,8 @@ type Mod struct {
 
 func init() {
 	Pools = &pool{
-		mgo:  make(map[string]mongo.Mgo),
-		list: make([]Mod, 0),
+		redis: make(map[string]redis.Redis, 0),
+		list:  make([]Mod, 0),
 	}
 }
 
@@ -45,7 +45,7 @@ func (p *pool) NewConnect(c config.Config) errors.Error {
 		if err != nil {
 			return err
 		}
-		p.mgo[c.Tag] = m
+		p.mgosession = m
 
 	case Mariadb_Driver, Mysql_Driver:
 		return nil
@@ -68,12 +68,8 @@ func (p *pool) NewConnect(c config.Config) errors.Error {
 	return nil
 }
 
-func (p *pool) Mgo(name string) (mongo.Mgo, errors.Error) {
-	if x, ok := p.mgo[name]; !ok {
-		return nil, errors.ErrorPoolNotFound
-	} else {
-		return x, nil
-	}
+func (p *pool) Mgo() mongo.MgoSession {
+	return p.mgosession
 }
 
 func (p *pool) Redis(name string) (redis.Redis, errors.Error) {
@@ -89,8 +85,5 @@ func (p *pool) List() []Mod {
 }
 
 func (p *pool) Status() {
-	for _, v := range p.mgo {
-		v.Status()
-	}
-
+	p.mgosession.Status()
 }
