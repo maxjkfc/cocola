@@ -14,6 +14,7 @@ type MgoCmd interface {
 	FindByID(id string, value interface{}) error
 	Find(selector interface{}, value interface{}) error
 	FindAll(selector interface{}, value interface{}) error
+	FindSkipLimit(selector, value interface{}, skip, limit int, sort ...string) error
 	Delete(selector interface{}) error
 	DeleteAll(selector interface{}) (*mgo.ChangeInfo, error)
 	DeleteByID(id string) error
@@ -76,6 +77,12 @@ func (m *mgodb) Find(selector interface{}, value interface{}) error {
 func (m *mgodb) FindAll(selector interface{}, value interface{}) error {
 	defer m.close()
 	return m.c.Find(selector).All(value)
+}
+
+// FindSkipLimit -{}
+func (m *mgodb) FindSkipLimit(selector, value interface{}, skip, limit int, sort ...string) error {
+	defer m.close()
+	return m.c.Find(selector).Skip(skip).Limit(limit).Sort(sort...).All(value)
 }
 
 // Delete -
