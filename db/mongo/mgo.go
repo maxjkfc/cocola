@@ -11,6 +11,7 @@ type MgoCmd interface {
 	Update(selector interface{}, args interface{}) error
 	UpdateByID(id string, args interface{}) error
 	UpdateAll(selector interface{}, args interface{}) (*mgo.ChangeInfo, error)
+	Upsert(selector interface{}, args interface{}) (*mgo.ChangeInfo, error)
 	FindByID(id string, value interface{}) error
 	Find(selector interface{}, value interface{}) error
 	FindAll(selector interface{}, value interface{}) error
@@ -56,6 +57,12 @@ func (m *mgodb) UpdateByID(id string, args interface{}) error {
 func (m *mgodb) UpdateAll(selector interface{}, args interface{}) (*mgo.ChangeInfo, error) {
 	defer m.close()
 	return m.c.UpdateAll(selector, args)
+}
+
+// Upsert
+func (m *mgodb) Upsert(selector interface{}, args interface{}) (*mgo.ChangeInfo, error) {
+	defer m.close()
+	return m.c.Upsert(selector, args)
 }
 
 // FindByID - 查詢資料
