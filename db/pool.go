@@ -79,3 +79,13 @@ func List() []Mod {
 func Status() {
 	p.mgosession.Status()
 }
+
+func DefaultMgo() {
+	c := config.Config{
+		DBtype: Mongo_Driver,
+		Host:   "localhost:27017",
+	}
+	if err := NewConnect(c); err != nil {
+		panic(err)
+	}
+}
