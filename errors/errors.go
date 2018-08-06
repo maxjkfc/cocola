@@ -3,8 +3,6 @@ package errors
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"sort"
 )
 
 var (
@@ -15,10 +13,10 @@ var (
 
 type errorList struct {
 	errs map[int]Error // error list
-	list []int         // error code list
+	list []*Err        // error code list
 }
 
-type err struct {
+type Err struct {
 	Msg  string `json:"msg"`
 	Code int    `json:"code"`
 }
@@ -33,7 +31,7 @@ func new() {
 	if errlist == nil {
 		errlist = &errorList{
 			errs: make(map[int]Error),
-			list: make([]int, 0),
+			list: make([]*Err, 0),
 		}
 	}
 
@@ -42,48 +40,31 @@ func new() {
 func New(code int, msg string) Error {
 	new()
 
-	fmt.Println(len(errlist.list))
 	if _, ok := errlist.errs[code]; ok {
 		panic(errorExist.Error())
 	}
 
-	errlist.errs[code] = &err{
+	e := &Err{
 		Code: code,
 		Msg:  msg,
 	}
 
-	errlist.list = append(errlist.list, code)
+	errlist.errs[code] = e
+
+	errlist.list = append(errlist.list, e)
 
 	return errlist.errs[code]
 }
 
-func Err(code int) Error {
-	if x, ok := errlist.errs[code]; ok {
-		return x
-	} else {
-		panic(errorNotExist.Error())
-	}
-
-}
-
-func List() {
-	sort.Ints(errlist.list)
-	for _, v := range errlist.list {
-		fmt.Printf("ErrorCode: %d \t ErrorMsg: %s\n", v, errlist.errs[v])
-	}
-
-}
-
-func Keys() []int {
-	sort.Ints(errlist.list)
+func List() []*Err {
 	return errlist.list
 }
 
-func (e *err) Error() string {
+func (e *Err) Error() string {
 	return e.Msg
 }
 
-func (e *err) Json() string {
+func (e *Err) Json() string {
 	x, err := json.Marshal(e)
 	if err != nil {
 		panic(err)
@@ -91,6 +72,6 @@ func (e *err) Json() string {
 	return string(x)
 }
 
-func (e *err) GetC() int {
+func (e *Err) GetC() int {
 	return e.Code
 }
