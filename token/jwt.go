@@ -1,9 +1,8 @@
 package token
 
 import (
-	"fmt"
-
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/maxjkfc/cocola/errors"
 )
 
 var (
@@ -20,15 +19,16 @@ const (
 type JWT interface {
 	Create(body interface{}) JWT
 	Parse(token string, body interface{}) JWT
-	Error() error
-	Valid() error
+	Error() errors.Error
+	Valid() errors.Error
 	Get() string
 }
 
 type jt struct {
-	t   *jwt.Token
-	jwt string
-	err error
+	t    *jwt.Token
+	jwt  string
+	err  error
+	errs errors.Error
 }
 
 func New() JWT {
@@ -50,7 +50,7 @@ func (j *jt) Create(body interface{}) JWT {
 	case jwt.Claims:
 		j.t = jwt.NewWithClaims(method, body.(jwt.Claims))
 	default:
-		j.err = fmt.Errorf("WrongType : %T", body)
+		j.err = errors.ErrorJwtCreateFailedForType
 	}
 	j.jwt, j.err = j.t.SignedString(key)
 	return j
@@ -64,25 +64,28 @@ func (j *jt) Parse(token string, body interface{}) JWT {
 	return j
 }
 
-func (j *jt) Valid() error {
+func (j *jt) Valid() errors.Error {
 
 	switch j.t.Claims.(type) {
 	case jwt.MapClaims:
 		t := j.t.Claims.(jwt.MapClaims)
-		if t.VerifyIssuer(issuer, true) {
-			return t.Valid()
+		if t.VerifyIssuer(issuer, true) && t.Valid() != nil {
+			return errors.ErrorJwtValidFailed
 		} else {
-			return fmt.Errorf("Error Issuer: %v", t["iss"])
+			return errors.ErrorJwtWrongIssuer
 		}
 	case jwt.Claims:
-		return j.t.Claims.Valid()
+		if j.t.Claims.Valid() != nil {
+			return errors.ErrorJwtValidFailed
+		}
 	default:
-		return fmt.Errorf("Error Wroung Type %T", j.t.Claims)
+		return errors.ErrorJwtValidFailed
 	}
+	return nil
 }
 
-func (j *jt) Error() error {
-	return j.err
+func (j *jt) Error() errors.Error {
+	return j.errs
 }
 
 func (j *jt) Get() string {
@@ -91,7 +94,7 @@ func (j *jt) Get() string {
 
 func keyLookup(t *jwt.Token) (interface{}, error) {
 	if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-		return nil, fmt.Errorf("Error SigningMethod : %v", t.Method)
+		return nil, errors.ErrorJwtSigningMethod
 	}
 	return key, nil
 }

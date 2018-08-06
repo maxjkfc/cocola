@@ -33,7 +33,7 @@ func new() {
 	if errlist == nil {
 		errlist = &errorList{
 			errs: make(map[int]Error),
-			list: make([]int, 255, 255),
+			list: make([]int, 0),
 		}
 	}
 
@@ -42,6 +42,7 @@ func new() {
 func New(code int, msg string) Error {
 	new()
 
+	fmt.Println(len(errlist.list))
 	if _, ok := errlist.errs[code]; ok {
 		panic(errorExist.Error())
 	}
@@ -67,10 +68,10 @@ func Err(code int) Error {
 
 func List() {
 	sort.Ints(errlist.list)
-
 	for _, v := range errlist.list {
 		fmt.Printf("ErrorCode: %d \t ErrorMsg: %s\n", v, errlist.errs[v])
 	}
+
 }
 
 func Keys() []int {
