@@ -14,7 +14,6 @@ type R struct {
 type Status struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
-	Time string `json:"time"`
 	Unix int64  `json:"unix"`
 }
 
@@ -33,7 +32,6 @@ func response(data interface{}, err errors.Error) R {
 		Status: Status{
 			Code: err.GetC(),
 			Msg:  err.Error(),
-			Time: t.Format(time.RFC3339),
 			Unix: t.Unix(),
 		},
 	}

@@ -19,6 +19,7 @@ type MgoCmd interface {
 	Delete(selector interface{}) error
 	DeleteAll(selector interface{}) (*mgo.ChangeInfo, error)
 	DeleteByID(id string) error
+	Count(selector interface{}) (int, error)
 }
 
 type mgodb struct {
@@ -105,6 +106,11 @@ func (m *mgodb) DeleteAll(selector interface{}) (*mgo.ChangeInfo, error) {
 func (m *mgodb) DeleteByID(id string) error {
 	defer m.close()
 	return m.c.RemoveId(bson.ObjectIdHex(id))
+}
+
+func (m *mgodb) Count(selector interface{}) (int, error) {
+	defer m.close()
+	return m.c.Find(selector).Count()
 }
 
 func (m *mgodb) close() {
