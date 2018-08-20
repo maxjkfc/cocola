@@ -4,7 +4,7 @@ package errors
 
 var (
 	NotError       = New(0, "Success")
-	ErrorConfigSet = New(2, "Config Seting Failed")
+	ErrorConfigSet = New(2, "Config seting failed")
 
 	// JWT
 	ErrorJwtCreateFailedForType = New(102, "Create jwt token failed (WrongType)")
@@ -15,11 +15,6 @@ var (
 	ErrorJwtValidFailed         = New(108, "Jwt validate failed")
 	ErrorJwtTokenNotFound       = New(109, "Jwt token not found")
 
-	// Login
-	ErrorAuthLoginFailed   = New(110, "User account or password is incorrect")
-	ErrorAuthLogoutFailed  = New(111, "User logout failed")
-	ErrorAuthTokenNotFound = New(112, "Not found the auth token")
-	ErrorAuthTokenFailed   = New(113, "Auth token check failed")
 	// Database Connect
 	ErrorDataBaseType  = New(200, "Error database connect type")
 	ErrorConnectFailed = New(201, "Connect failed.")
