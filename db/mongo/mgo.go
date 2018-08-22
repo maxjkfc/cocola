@@ -84,6 +84,12 @@ func (m *mgodb) FindAll(selector interface{}, value interface{}) error {
 	return m.c.Find(selector).All(value)
 }
 
+// FindAll - find all document from the specific condition
+func (m *mgodb) FindAllBySort(selector interface{}, value interface{}, sort ...string) error {
+	defer m.close()
+	return m.c.Find(selector).Sort(sort...).All(value)
+}
+
 // FindSkipLimit -{}
 func (m *mgodb) FindSkipLimit(selector, value interface{}, skip, limit int, sort ...string) error {
 	defer m.close()
