@@ -15,6 +15,7 @@ type MgoCmd interface {
 	FindByID(id string, value interface{}) error
 	Find(selector interface{}, value interface{}) error
 	FindAll(selector interface{}, value interface{}) error
+	FindAllBySort(selector interface{}, value interface{}, sort ...string) error
 	FindSkipLimit(selector, value interface{}, skip, limit int, sort ...string) error
 	Delete(selector interface{}) error
 	DeleteAll(selector interface{}) (*mgo.ChangeInfo, error)
