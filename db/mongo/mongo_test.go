@@ -69,6 +69,17 @@ func Test_FindMgo(t *testing.T) {
 
 }
 
+func Test_Find(t *testing.T) {
+	d := m.DB("test", "user")
+	q := d.Find(bson.M{"name": "Admin"})
+	if err := q.One(u); err != nil {
+		t.Error(err)
+	} else {
+		t.Log("Success")
+	}
+
+}
+
 func Test_Status(t *testing.T) {
 	t.Log(m.Status())
 }
