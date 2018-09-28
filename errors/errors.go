@@ -3,6 +3,8 @@ package errors
 import (
 	"encoding/json"
 	"errors"
+
+	"github.com/maxjkfc/cocola/log"
 )
 
 var (
@@ -39,8 +41,8 @@ func new() {
 
 func New(code int, msg string) Error {
 	new()
-
 	if _, ok := errlist.errs[code]; ok {
+		log.Error("Same Error", errorExist)
 		panic(errorExist.Error())
 	}
 
