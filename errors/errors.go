@@ -15,10 +15,10 @@ var (
 
 type errorList struct {
 	errs map[int]Error // error list
-	list []*Err        // error code list
+	list []*err        // error code list
 }
 
-type Err struct {
+type err struct {
 	Msg  string `json:"msg"`
 	Code int    `json:"code"`
 }
@@ -33,12 +33,13 @@ func new() {
 	if errlist == nil {
 		errlist = &errorList{
 			errs: make(map[int]Error),
-			list: make([]*Err, 0),
+			list: make([]*err, 0),
 		}
 	}
 
 }
 
+// New - the New Error in list
 func New(code int, msg string) Error {
 	new()
 	if _, ok := errlist.errs[code]; ok {
@@ -46,7 +47,7 @@ func New(code int, msg string) Error {
 		panic(errorExist.Error())
 	}
 
-	e := &Err{
+	e := &err{
 		Code: code,
 		Msg:  msg,
 	}
@@ -58,15 +59,23 @@ func New(code int, msg string) Error {
 	return errlist.errs[code]
 }
 
-func List() []*Err {
+// T - temp error
+func T(code int, msg string) Error {
+	return &err{
+		Code: code,
+		Msg:  msg,
+	}
+}
+
+func List() []*err {
 	return errlist.list
 }
 
-func (e *Err) Error() string {
+func (e *err) Error() string {
 	return e.Msg
 }
 
-func (e *Err) Json() string {
+func (e *err) Json() string {
 	x, err := json.Marshal(e)
 	if err != nil {
 		panic(err)
@@ -74,6 +83,6 @@ func (e *Err) Json() string {
 	return string(x)
 }
 
-func (e *Err) GetC() int {
+func (e *err) GetC() int {
 	return e.Code
 }
