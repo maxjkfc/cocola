@@ -58,22 +58,27 @@ func (j *jt) Create(body interface{}) JWT {
 
 func (j *jt) Parse(token string, body interface{}) JWT {
 	j.t, j.err = jwt.ParseWithClaims(token, body.(jwt.Claims), keyLookup)
+
 	if j.err == nil {
-		j.err = j.Valid()
+		j.errs = j.Valid()
+	} else {
+		j.errs = errors.T(10000, j.err.Error())
 	}
+
 	return j
 }
 
 func (j *jt) Valid() errors.Error {
-
 	switch j.t.Claims.(type) {
 	case jwt.MapClaims:
 		t := j.t.Claims.(jwt.MapClaims)
-		if t.VerifyIssuer(issuer, true) && t.Valid() != nil {
-			return errors.ErrorJwtValidFailed
-		} else {
+		if !t.VerifyIssuer(issuer, true) {
 			return errors.ErrorJwtWrongIssuer
 		}
+		if t.Valid() != nil {
+			return errors.ErrorJwtValidFailed
+		}
+
 	case jwt.Claims:
 		if j.t.Claims.Valid() != nil {
 			return errors.ErrorJwtValidFailed
@@ -81,6 +86,7 @@ func (j *jt) Valid() errors.Error {
 	default:
 		return errors.ErrorJwtValidFailed
 	}
+
 	return nil
 }
 

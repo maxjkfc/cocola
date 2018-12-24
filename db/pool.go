@@ -76,10 +76,12 @@ func List() []Mod {
 	return p.list
 }
 
+// Status - the Database Status
 func Status() {
 	p.mgosession.Status()
 }
 
+// DefaultMgo - Use the Localhost Mgo
 func DefaultMgo() {
 	c := config.Config{
 		DBtype: Mongo_Driver,
@@ -88,4 +90,16 @@ func DefaultMgo() {
 	if err := NewConnect(c); err != nil {
 		panic(err)
 	}
+}
+
+// DefaultRedis - Use the Localhost Redis
+func DefaultRedis() {
+	c := config.Config{
+		DBtype: Redis_Driver,
+		Host:   "localhost:6379",
+	}
+	if err := NewConnect(c); err != nil {
+		panic(err)
+	}
+
 }

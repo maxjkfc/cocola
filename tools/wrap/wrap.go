@@ -8,7 +8,7 @@ func AutoWrapSline(text string, limit int) []string {
 	var (
 		temp       string
 		shiftspace int
-		tab        = "  "
+		tab        = ""
 	)
 
 	for _, v := range text {
