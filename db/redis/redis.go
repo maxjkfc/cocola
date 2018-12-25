@@ -9,13 +9,14 @@ import (
 	"github.com/maxjkfc/cocola/errors"
 )
 
+// Redis -
 type Redis interface {
-	New() redis.Conn
+	New() Cmd
 	Status() string
 	Close()
 }
 
-type redisdriver struct {
+type driver struct {
 	p    *redis.Pool
 	s    config.Status
 	c    config.Config
@@ -23,15 +24,18 @@ type redisdriver struct {
 	errs errors.Error
 }
 
+// Dial - dial the redis server
 func Dial(c config.Config) (Redis, errors.Error) {
-	return new(redisdriver).dial(c)
+	return new(driver).dial(c)
 }
 
-func (r *redisdriver) New() redis.Conn {
-	return r.p.Get()
+func (r *driver) New() Cmd {
+	return &cmds{
+		db: r.p.Get(),
+	}
 }
 
-func (r *redisdriver) dial(c config.Config) (Redis, errors.Error) {
+func (r *driver) dial(c config.Config) (Redis, errors.Error) {
 
 	opt, err := r.setConfig(c)
 	if err != nil {
@@ -55,12 +59,12 @@ func (r *redisdriver) dial(c config.Config) (Redis, errors.Error) {
 
 	if err := r.p.TestOnBorrow(r.p.Get(), time.Now()); err != nil {
 		return nil, errors.ErrorConnectFailed
-	} else {
-		return r, nil
 	}
+
+	return r, nil
 }
 
-func (r *redisdriver) setConfig(c config.Config) (interface{}, errors.Error) {
+func (r *driver) setConfig(c config.Config) (interface{}, errors.Error) {
 
 	c.Format()
 	r.c = c
@@ -95,11 +99,11 @@ func (r *redisdriver) setConfig(c config.Config) (interface{}, errors.Error) {
 	return option, nil
 }
 
-func (r *redisdriver) setStatus() {
+func (r *driver) setStatus() {
 	r.s.Set(r.c)
 }
 
-func (r *redisdriver) Status() string {
+func (r *driver) Status() string {
 	r.s.GetTotalTime()
 	r.s.Connecting = r.p.ActiveCount()
 	if r.p.TestOnBorrow(r.p.Get(), time.Now()) != nil {
@@ -112,6 +116,6 @@ func (r *redisdriver) Status() string {
 	return r.s.Json()
 }
 
-func (r *redisdriver) Close() {
+func (r *driver) Close() {
 	r.p.Close()
 }
