@@ -1,5 +1,5 @@
 # Error Code
-
+```
 ErrorCode: 0     ErrorMsg: Success
 ErrorCode: 1     ErrorMsg: the test error
 ErrorCode: 2     ErrorMsg: Config Seting Failed
@@ -26,4 +26,4 @@ ErrorCode: 300   ErrorMsg: Request bind failed
 ErrorCode: 301   ErrorMsg: Request valid failed
 ErrorCode: 310   ErrorMsg: Operation failed
 ErrorCode: 311   ErrorMsg: Illegal operation
-
+```
