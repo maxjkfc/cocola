@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package base;
-option go_package = "github.com/maxjkfc/cocola/base";
+option go_package = "github.com/maxjkfc/cocola/protobuf/base";
 
 // 導入 google timestamp 包
 import "google/protobuf/timestamp.proto";
