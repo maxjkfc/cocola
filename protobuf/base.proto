@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package base;
+option go_package = "github.com/maxjkfc/cocola/base";
+
+// 導入 google timestamp 包
+import "google/protobuf/timestamp.proto";
+
+// 列表基礎需求 request
+message ListRequest {
+  int32 page = 1;
+  int32 size = 2;
+}
+
+// 狀態回報
+message StatusReply {
+  int32 code = 1;
+  string msg = 2;
+  google.protobuf.Timestamp unix = 3;
+}
